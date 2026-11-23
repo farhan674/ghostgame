@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEKA-TEKI HANTU</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .game-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            width: 95%;
+            max-width: 600px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .title {
+            text-align: center;
+            color: #1a1a2e;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa502, #2edc8f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3aae76;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            color: #1a1a2e;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .story-piece {
+            background: #fff5f0;
+            border-left: 3px solid #ff6b6b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95em;
+            color: #2d3436;
+        }
+
+        .story-piece strong {
+            color: #ff6b6b;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            padding: 18px;
+            font-size: 1.1em;
+            border: 3px solid #3aae76;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-3px);
+            background: #3aae76;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+            transform: none !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #2edc8f, #3aae76);
+            border-color: #2ecc71;
+            color: white;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            border-color: #e74c3c;
+            color: white;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #2edc8f, #3aae76);
+            color: white;
+        }
+
+        .feedback.wrong {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #ff6b6b, #ffa502);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.03);
+            opacity: 0.9;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .final-score {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+
+        .final-message {
+            font-size: 1.3em;
+            margin: 15px 0;
+        }
+
+        .play-again-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: white;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .play-again-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <h1 class="title">🧩 TEKA-TEKI HANTU</h1>
+        <p class="subtitle">Teka-Jawaban Magis dari Sekolah Hantu! 🕯️</p>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="correctCount">0</div>
+                <div class="stat-label">Benar</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Akurasi</div>
+            </div>
+        </div>
+        
+        <div class="question-box">
+            <div class="question-text" id="question">Teka-teki akan muncul di sini</div>
+            <div class="story-piece">
+                <strong>Narasi:</strong> <span id="storyText">Silakan pilih jawaban pertama!</span>
+            </div>
+        </div>
+        
+        <div class="options" id="options">
+            <button class="option-btn" onclick="selectOption(0)">Pilihan 1</button>
+            <button class="option-btn" onclick="selectOption(1)">Pilihan 2</button>
+            <button class="option-btn" onclick="selectOption(2)">Pilihan 3</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        
+        <button class="reset-btn" onclick="resetGame()">🔄 Main Lagi</button>
+        
+        <div class="game-over" id="gameOver">
+            <h2>Game Over! 👻</h2>
+            <div class="final-score" id="finalScore">0</div>
+            <p>Teka-teki yang benar: <span id="finalCorrect">0</span>/20</p>
+            <p class="final-message" id="finalMessage">Terima kasih sudah main!</p>
+            <button class="play-again-btn" onclick="resetGame()">Main Lagi!</button>
+        </div>
+    </div>
+
+    <script>
+        let questions = [
+            {
+                question: "Di sekolah hantu, siapa kepala sekolahnya?",
+                story: "Setelah kepala sekolah mengundurkan diri, sekolah ini ditinggalkan sepenuhnya. Namun, ia tidak mengundurkan diri dengan cara biasan...",
+                options: ["Pak Guru Santoso (pensiun)", "Pak Mat Arief (rekrutmen baru)", "Bapak Keji (tidak ada izin)"],
+                answer: 1
+            },
+            {
+                question: "Apa yang ditemui hari ini di halaman sekolah?",
+                story: "Matahari tengah tarikan, kakak kita menemukan sesuatu yang aneh di halaman utama sekolah.",
+                options: ["Mayat Mahasiswa (alumni)", "Mayat Murid PNS (rekan sekelas)", "Mayat Siswa (sekolah lama)"],
+                answer: 2
+            },
+            {
+                question: "Berapa hari setelah pelajar pulang mereka menemukan mayat?",
+                story: "Seorang rekan mengaku bahwa ia dan teman-temannya melihat sesuatu yang mengerikan hanya beberapa hari setelah pulang.",
+                options: ["Satu hari (pagi)", "Dua hari (malam)", "Tiga hari (minggu)"],
+                answer: 1
+            },
+            {
+                question: "Apa yang ditemukan di dalam ruang kelas?",
+                story: "Ruang kelas yang seharusnya kosong tiba-tiba berisi benda-benda yang mencurigakan.",
+                options: ["Rapor basah darah (catatan misterius)", "Buku pelajaran basah kendaraan (lain)", "Peta sekolah rusak (peta lalu)"],
+                answer: 1
+            },
+            {
+                question: "Siapa yang memberi tahu tentang misteri sekolah?",
+                story: "Seorang guru dulu menyadari sesuatu yang tidak normal. Ia memutuskan untuk memberitahu semua orang.",
+                options: ["Sekretaris (terkintakan)", "Dokter Gizi (berpengalaman)", "Guru BK (peduli)"],
+                answer: 0
+            },
+            {
+                question: "Apa istilah untuk gangguan spiritual?",
+                story: "Dalam penelitian tentang fenomena gaib, para ahli memberi istilah tertentu untuk... gangguan seperti ini.",
+                options: ["Gangguan Psikologis (bukan)", "Munafik (salah konteks)", "Gangguan Spiritual (benar)"],
+                answer: 2
+            },
+            {
+                question: "Benda apa yang paling berbahaya di sekolah hantu?",
+                story: "Di sekolah ini, ada sesuatu yang sangat berbahaya. Benda apa yang sebenarnya paling mencekik?",
+                options: ["Lampu (sakit mata)", "Pintu Bunci (terlarang)", "Jendela terkunci (ancaman)"],
+                answer: 1
+            },
+            {
+                question: "Apa yang membuat sekolah ini spesial?",
+                story: "Bukan sekadar sekolah biasa. Ada yang membuatnya berbeda dari sekolah lain di daerah ini.",
+                options: ["Misteri lama (ramai)", "Rahasia keluarga (pribadi)", "Bahaya sekolah (ancaman)"],
+                answer: 0
+            },
+            {
+                question: "Apa yang ditemukan di kuburan sekolah?",
+                story: "Di sekolah ini tersembunyi sesuatu yang menyeramkan. Di dalam makam yang ditutup, apa selalu ditemui?",
+                options: ["Tombak hantu (senjata)", "Paham kuno (pengetahuan)", "Pintu gerbang (jalan)"],
+                answer: 1
+            },
+            {
+                question: "Siapa yang menuturkan bahwa ada hantu di sekolah?",
+                story: "Seorang anak mengaku melihat makhluk gaib di sekolah. Siapa yang sebenarnya pujiannya?",
+                options: ["Siswa SMP (cinta)", "Guru senior (profesional)", "Orang tuanya tetangga (peduli)"],
+                answer: 0
+            },
+            {
+                question: "Tema apa yang paling sering muncul di sekolah hantu?",
+                story: "Setiap teka-teki yang diselesaikan mungkin memberi tahu kita tentang... topik apa yang paling sering terjadi?",
+                options: ["Misteri lama (ramai)", "Rahasia keluarga (pribadi)", "Bahaya sekolah (ancaman)"],
+                answer: 0
+            },
+            {
+                question: "Apa yang dulu pernah terjadi di sekolah ini?",
+                story: "Di masa lalu, sekolah ini pernah mengalami hal yang sangat menyedihkan. Apa yang terjadi?",
+                options: ["Kebakaran (kebakaran)", "Pembunuhan (pembunuhan)", "Penyakit (penyakit)"],
+                answer: 1
+            },
+            {
+                question: "Dari pemilik apa nama sekolah hantu berasal?",
+                story: "Nama sekolah ini tidak sekadar nama acak. Ada satu orang yang spesial yang berperan...",
+                options: ["Seorang guru (profesor)", "Seorang penastgh (pembunuh)", "Seorang arsitek (pelopor)"],
+                answer: 1
+            },
+            {
+                question: "Apa yang ditemukan di sudut sekolah?",
+                story: "Setiap sudut sekolah punya rahasia tersendiri. Di sudut mana yang paling gelap dan menakutkan?",
+                options: ["Rahsia (lain)", "Mayat (benar)", "Matahari (tersembunyi)"],
+                answer: 1
+            },
+            {
+                question: "Teka-teki apa yang paling menakutkan?",
+                story: "Di antara semua teka-teki yang pernah terjadi, mana yang paling membuat semua orang ketakutan?",
+                options: ["Siluman (mengerikan)", "Pengantin muda (misterius)", "Anak kosong (menyedihkan)"],
+                answer: 2
+            },
+            {
+                question: "Apa yang membuat sekolah ini spesial bagi hantu?",
+                story: "Sekolah ini bukan hanya tempat belajar. Ia juga menjadi tempat... apa yang spesial untuk hantu?",
+                options: ["Arkeologi (sejarah)", "Spiritualitas (purba)", "Akademisi (modern)"],
+                answer: 1
+            },
+            {
+                question: "Berapa orang yang dulu meninggal di sekolah ini?",
+                story: "Setiap makam di sekolah ini memiliki nama tertentu. Berapa kira-kira jumlah korban yang dulu ada?",
+                options: ["7 orang (sedikit)", "10 orang (sedang)", "13 orang (banyak)"],
+                answer: 2
+            },
+            {
+                question: "Apa yang bisa membuat hantu muncul?",
+                story: "Tidak semua orang yang masuk ke sekolah bisa bertemu dengan hantu. Ada hal khusus yang dibutuhkan...",
+                options: ["Ritual (kebutuhan)", "Makanan (gampang)", "Musik (menarik)"],
+                answer: 0
+            },
+            {
+                question: "Di mana biji hantu biasanya ditemui?",
+                story: "Biji hantu adalah buah dari rambutan atau kelincang. Di mana tempatnya paling sejuk?",
+                options: ["Taman (ramah)", "Perpustakaan (tenang)", "Gudang (tertutup)"],
+                answer: 2
+            },
+            {
+                question: "Berapa usia kepala sekolah sebelum mengundurkan diri?",
+                story: "Kepala sekolah yang pernah memimpin sekolah ini memiliki riwayat hidup yang mengerikan...",
+                options: ["55 tahun (paruh waktu)", "60 tahun (penuh usia)", "65 tahun (waktu selesai)"],
+                answer: 0
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let correctCount = 0;
+        let totalCount = 0;
+        let answered = false;
+        let hasGameEnded = false;
+
+        // Acak urutan pertanyaan
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        let shuffledQuestions = shuffleArray(questions);
+
+        function updateStats() {
+            document.getElementById('correctCount').textContent = correctCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function selectOption(index) {
+            if (answered || hasGameEnded) return;
+            
+            answered = true;
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            const feedback = document.getElementById('feedback');
+            const isCorrect = index === currentQuestion.answer;
+            
+            totalCount++;
+            if (isCorrect) {
+                correctCount++;
+                feedback.textContent = '✓ Benar! Keren banget!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = '✗ Salah! Belajar terus ya!';
+                feedback.className = 'feedback wrong';
+            }
+            
+            feedback.style.display = 'block';
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === currentQuestion.answer) {
+                    btn.classList.add('correct');
+                } else if (isCorrect && i === index) {
+                    btn.classList.add('correct');
+                } else if (!isCorrect && i === index) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            updateStats();
+            
+            if (currentQuestionIndex < questions.length - 1) {
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    answered = false;
+                    loadQuestion();
+                }, 2000);
+            } else {
+                endGame();
+            }
+        }
+
+        function loadQuestion() {
+            const question = shuffledQuestions[currentQuestionIndex];
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('storyText').textContent = question.story;
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, i) => {
+                btn.textContent = question.options[i];
+                btn.disabled = false;
+                btn.classList.remove('correct', 'wrong');
+            });
+            
+            answered = false;
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function endGame() {
+            hasGameEnded = true;
+            document.querySelector('.question-box').style.display = 'none';
+            document.querySelector('.options').style.display = 'none';
+            document.querySelector('.stats').style.display = 'none';
+            
+            document.getElementById('finalScore').textContent = correctCount + ' / ' + questions.length;
+            document.getElementById('finalCorrect').textContent = correctCount;
+            
+            const messageElement = document.getElementById('finalMessage');
+            if (correctCount >= 16) {
+                messageElement.textContent = 'Pemain Hebat! Kamu bisa mengungkap rahasia sekolah hantu!';
+            } else if (correctCount >= 10) {
+                messageElement.textContent = 'Bagus! Kamu sudah mengerti beberapa teka-teki sekolah hantu!';
+            } else {
+                messageElement.textContent = 'Yah, belum begitu baik. Coba lagi untuk temukan rahasia sebelum hantu datang!';
+            }
+            
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        function resetGame() {
+            currentQuestionIndex = 0;
+            correctCount = 0;
+            totalCount = 0;
+            answered = false;
+            hasGameEnded = false;
+            shuffledQuestions = shuffleArray(questions);
+            
+            document.querySelector('.question-box').style.display = 'block';
+            document.querySelector('.options').style.display = 'flex';
+            document.querySelector('.stats').style.display = 'flex';
+            document.getElementById('gameOver').style.display = 'block';
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('correct', 'wrong');
+            });
+            
+            loadQuestion();
+            updateStats();
+        }
+
+        // Mulai game
+        loadQuestion();
+        updateStats();
+    </script>
+</body>
+</html>
